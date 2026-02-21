@@ -35,6 +35,10 @@ app.use('/api/teachers', require('./routes/teachers'));
 app.use('/api/admin-alerts', require('./routes/adminAlerts'));
 app.use('/api/alerts', alertsRoutes);
 
+app.get("/", (req, res) => {
+  res.send("Student Attendance API Running ✅");
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is running' });
