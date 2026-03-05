@@ -155,7 +155,7 @@ const MarkAttendance = () => {
         : `Attendance saved for ${response.data.marked} students. You can edit until finalized.`;
       setMessage({ type: 'success', text: msg });
       if (response.data.marked > 0) fetchStudentsAndAttendance();
-    } catch (error) {
+    } catch (error: any) {
       setMessage({ type: 'error', text: error.response?.data?.error || 'Failed to save attendance' });
     } finally {
       setLoading(false);
@@ -207,7 +207,7 @@ const MarkAttendance = () => {
       setMessage({ type: 'success', text: 'Attendance finalized. No further edits allowed.' });
       setIsFinalized(true);
       fetchStudentsAndAttendance();
-    } catch (error) {
+    } catch (error: any) {
       const errMsg = error.response?.data?.error || error.response?.data?.message || error.message || 'Failed to finalize';
       setMessage({ type: 'error', text: errMsg });
     } finally {

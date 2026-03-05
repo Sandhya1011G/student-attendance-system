@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../config/api';
+import { Alert } from '../../types';
 
-const TeacherAdminAlerts = () => {
+const TeacherAdminAlerts: React.FC = () => {
   const navigate = useNavigate();
 
   const teacherMongoId = localStorage.getItem('teacherId'); // Fixed: was 'teacherMongoId'
   const academicYear = '2024-2025';
 
-  const [alerts, setAlerts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     if (!teacherMongoId) return;
@@ -20,28 +21,28 @@ const TeacherAdminAlerts = () => {
     try {
       setLoading(true);
 
-      // ✅ ADMIN → CLASS alerts for teacher’s class
+      // ✅ ADMIN → CLASS alerts for teacher's class
       const className = localStorage.getItem('teacherClass');
       const section = localStorage.getItem('teacherSection');
 
-      const res = await api.get(
+      const res = await api.get<Alert[]>(
         `/alerts/class/${className}/${section}`,
         { params: { academicYear } }
       );
 
       setAlerts(res.data || []);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to fetch admin alerts', err);
     } finally {
       setLoading(false);
     }
   };
 
-  const markAsRead = async (id) => {
+  const markAsRead = async (id: string) => {
     try {
       await api.put(`/alerts/${id}/read`);
       fetchAlerts(); // refresh
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to mark read', err);
     }
   };
@@ -79,7 +80,7 @@ const TeacherAdminAlerts = () => {
         </div>
       ) : (
         <div className="space-y-4">
-          {alerts.map((alert) => (
+          {alerts.map((alert: Alert) => (
             <div
               key={alert._id}
               className={`border rounded-lg p-4 ${

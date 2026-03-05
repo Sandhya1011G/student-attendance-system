@@ -81,7 +81,7 @@ const StudentReport = () => {
 
       setSemesterData(semesterRes.data);
 
-      const months = [];
+      const months: any[] = [];
       const cursor = start.clone();
 
       while (cursor.isSameOrBefore(end, 'month')) {
@@ -222,66 +222,70 @@ const StudentReport = () => {
   if (loading) return <div className="p-10 text-center">Loading...</div>;
   if (!student) return <div className="p-10 text-center text-red-600">Student not found</div>;
 
-  return (
-    <div className="container mx-auto px-4 py-8">
+ return (
+  <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
 
-      <button
-        onClick={() => navigate(-1)}
-        className="mb-4 px-4 py-2 bg-gray-600 text-white rounded"
-      >
-        ← Back
-      </button>
+    <button
+      onClick={() => navigate(-1)}
+      className="mb-3 px-3 py-2 bg-gray-600 text-white rounded text-sm"
+    >
+      ← Back
+    </button>
 
-      <div className="bg-white rounded-lg shadow-lg p-6">
+    {/* ✅ CARD FIX */}
+    <div className="bg-white rounded-lg shadow-lg p-3 sm:p-6 max-w-full overflow-hidden">
 
-        {/* ✅ TITLE LIKE SCREENSHOT */}
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">
-          MY SEMESTER ATTENDANCE - {student.name.toUpperCase()} - {semester === 'SEM1' ? 'SEMESTER 1' : 'SEMESTER 2'}
-        </h1>
+      {/* ✅ TITLE FIX */}
+      <h1 className="text-lg sm:text-3xl font-bold text-gray-800 mb-2">
+        MY SEMESTER ATTENDANCE - {student.name.toUpperCase()} - {semester === 'SEM1' ? 'SEMESTER 1' : 'SEMESTER 2'}
+      </h1>
 
-        <p className="text-gray-600 mb-6">
-          CLASS: {student.class}{student.section}
-        </p>
+      <p className="text-gray-600 mb-3 text-sm sm:text-base">
+        CLASS: {student.class}{student.section}
+      </p>
 
-        {/* ✅ DROPDOWN */}
-        <div className="flex justify-end mb-4">
-          <select
-            value={semester}
-            onChange={(e) => setSemester(e.target.value)}
-            className="border px-3 py-2 rounded"
-          >
-            <option value="SEM1">Semester 1 (Jul – Dec)</option>
-            <option value="SEM2">Semester 2 (Jan – Jun)</option>
-          </select>
+      {/* ✅ DROPDOWN FIX */}
+      <div className="flex flex-col sm:flex-row gap-2 sm:justify-end mb-3">
 
-          <select
-            value={academicYear}
-            onChange={(e) => setAcademicYear(e.target.value)}
-            className="border px-3 py-2 rounded ml-4"
-          >
-            <option value="2025-2026">2025-2026</option>
-            <option value="2024-2025">2024-2025</option>
-            <option value="2023-2024">2023-2024</option>
-          </select>
-        </div>
+        <select
+          value={semester}
+          onChange={(e) => setSemester(e.target.value)}
+          className="border px-3 py-2 rounded text-sm w-full sm:w-auto"
+        >
+          <option value="SEM1">Semester 1 (Jul – Dec)</option>
+          <option value="SEM2">Semester 2 (Jan – Jun)</option>
+        </select>
 
-        <table className="w-full border text-center mb-6">
+        <select
+          value={academicYear}
+          onChange={(e) => setAcademicYear(e.target.value)}
+          className="border px-3 py-2 rounded text-sm w-full sm:w-auto"
+        >
+          <option value="2025-2026">2025-2026</option>
+          <option value="2024-2025">2024-2025</option>
+          <option value="2023-2024">2023-2024</option>
+        </select>
+      </div>
+
+      {/* ✅ TABLE FIX (MOST IMPORTANT) */}
+      <div className="w-full overflow-x-auto">
+        <table className="w-full border text-center text-xs sm:text-sm mb-3">
           <thead>
             <tr className="bg-gray-100">
-              <th className="p-3">MONTH</th>
-              <th>TOTAL DAYS</th>
-              <th>PRESENT</th>
-              <th>ABSENT</th>
-              <th>ATTENDANCE %</th>
-              <th>STATUS</th>
-              <th>VIEW</th>
+              <th className="px-2 py-1">MONTH</th>
+              <th className="px-2 py-1">TOTAL</th>
+              <th className="px-2 py-1">PRESENT</th>
+              <th className="px-2 py-1">ABSENT</th>
+              <th className="px-2 py-1">%</th>
+              <th className="px-2 py-1">STATUS</th>
+              <th className="px-2 py-1">VIEW</th>
             </tr>
           </thead>
 
           <tbody>
             {monthlyData.map((m, i) => (
               <tr key={i} className="border-t">
-                <td className="p-3">{m.month}</td>
+                <td>{m.month}</td>
                 <td>{m.totalDays}</td>
                 <td>{m.presentDays}</td>
                 <td>{m.absentDays}</td>
@@ -290,19 +294,14 @@ const StudentReport = () => {
                   {getStatusText(m.percentage)}
                 </td>
                 <td>
-                  <button
-                    onClick={() => openCalendar(m)}
-                    className="text-blue-600 text-xl"
-                  >
-                    👁
-                  </button>
+                  <button onClick={() => openCalendar(m)}>👁</button>
                 </td>
               </tr>
             ))}
 
             {semesterData && (
               <tr className="border-t font-semibold bg-gray-50">
-                <td className="p-3">TOTAL SEMESTER</td>
+                <td>TOTAL</td>
                 <td>{semesterData.attendance.totalDays}</td>
                 <td>{semesterData.attendance.presentDays}</td>
                 <td>{semesterData.attendance.absentDays}</td>
@@ -313,39 +312,40 @@ const StudentReport = () => {
             )}
           </tbody>
         </table>
-
-        {/* ✅ BIG PERCENTAGE + BUTTON */}
-        {semesterData && (
-          <div className="flex justify-between items-center">
-            <p className="text-2xl font-bold">
-              SEMESTER ATTENDANCE PERCENTAGE: {semesterData.attendance.percentage}%
-            </p>
-
-            <button
-              onClick={handleDownloadPDF}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-            >
-              DOWNLOAD PDF
-            </button>
-          </div>
-        )}
-
-        <p className="text-sm text-gray-500 italic mt-4">
-          Official attendance records are maintained by the school administration.
-        </p>
       </div>
 
-      {showCalendar && selectedMonth && (
-        <MonthCalendar
-          monthData={selectedMonth}
-          studentId={studentId}
-          academicYear={academicYear}
-          onClose={() => setShowCalendar(false)}
-        />
+      {/* ✅ FOOTER FIX */}
+      {semesterData && (
+        <div className="flex flex-col sm:flex-row gap-2 sm:justify-between">
+
+          <p className="text-sm sm:text-2xl font-bold">
+            SEMESTER ATTENDANCE: {semesterData.attendance.percentage}%
+          </p>
+
+          <button
+            onClick={handleDownloadPDF}
+            className="px-4 py-2 bg-blue-600 text-white rounded text-sm"
+          >
+            DOWNLOAD PDF
+          </button>
+        </div>
       )}
 
+      <p className="text-xs text-gray-500 italic mt-2">
+        Official attendance records are maintained by the school administration.
+      </p>
     </div>
-  );
+
+    {showCalendar && selectedMonth && (
+      <MonthCalendar
+        monthData={selectedMonth}
+        studentId={studentId}
+        academicYear={academicYear}
+        onClose={() => setShowCalendar(false)}
+      />
+    )}
+  </div>
+);
 };
 
 export default StudentReport;

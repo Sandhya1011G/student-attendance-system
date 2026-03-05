@@ -4,9 +4,9 @@ import StudentReport from '../StudentReport';
 import AttendanceSummary from '../student/AttendanceSummary';
 import StudentAlerts from '../student/StudentAlerts';   // ✅ ADD THIS
 
-const StudentView = () => {
+const StudentView: React.FC = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('attendance');
+  const [activeTab, setActiveTab] = useState<string>('attendance');
 
   const handleLogout = () => {
     localStorage.removeItem('studentId');
@@ -115,7 +115,7 @@ const StudentView = () => {
               Alerts & Notices
             </h3>
             <p className="text-gray-600 text-sm mb-4">
-              View important announcements and alerts
+              View important announcements and Alerts
             </p>
             <button
               onClick={() => setActiveTab('alerts')}

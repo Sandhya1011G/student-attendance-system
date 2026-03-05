@@ -1,45 +1,51 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../config/api';
+import { LoginProps } from '../types';
 
-const StudentLogin = () => {
+interface StudentLoginResponse {
+  studentId: string;
+  name: string;
+  class: string;
+  section: string;
+}
+
+const StudentLogin: React.FC<LoginProps> = () => {
   const navigate = useNavigate();
 
-  const [rollNumber, setRollNumber] = useState('');
-  const [error, setError] = useState('');
+  const [rollNumber, setRollNumber] = useState<string>('');
+  const [error, setError] = useState<string>('');
 
   const handleLogin = async () => {
-  try {
-    setError('');
+    try {
+      setError('');
 
-    if (!rollNumber.trim()) {
-      setError('Please enter Roll Number');
-      return;
+      if (!rollNumber.trim()) {
+        setError('Please enter Roll Number');
+        return;
+      }
+
+      const res = await api.post<StudentLoginResponse>('/students/login', {
+        studentId: rollNumber.trim().toUpperCase(),   // ✅ normalize input
+        academicYear: '2024-2025'
+      });
+
+      const student = res.data;
+
+      // ✅ STORE SESSION (VERY IMPORTANT)
+      localStorage.setItem('studentId', student.studentId);   // Mongo ObjectId
+      localStorage.setItem('studentName', student.name);
+      localStorage.setItem('studentClass', student.class);
+      localStorage.setItem('studentSection', student.section);
+
+      // ✅ Navigate WITHOUT state dependency
+      navigate('/student-dashboard');
+
+    } catch (err: any) {
+      console.error(err);
+      setError(err.response?.data?.error || 'Login failed');
     }
-
-    const res = await api.post('/students/login', {
-      studentId: rollNumber.trim().toUpperCase(),   // ✅ normalize input
-      academicYear: '2024-2025'
-    });
-
-    const student = res.data;
-
-// ✅ STORE SESSION (VERY IMPORTANT)
-localStorage.setItem('studentId', student.studentId);   // Mongo ObjectId
-localStorage.setItem('studentName', student.name);
-localStorage.setItem('studentClass', student.class);
-localStorage.setItem('studentSection', student.section);
-
-// ✅ Navigate WITHOUT state dependency
-navigate('/student-dashboard');
-
-
-  } catch (err) {
-    console.error(err);
-    setError(err.response?.data?.error || 'Login failed');
-  }
-};
-
+  };
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">

@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../config/api';
+import { Student, Alert } from '../types';
 
-const TeacherAlerts = () => {
+interface AlertForm {
+  title: string;
+  message: string;
+  studentId: string;
+}
+
+const TeacherAlerts: React.FC = () => {
   const navigate = useNavigate();
 
-  const [students, setStudents] = useState([]);
-  const [alerts, setAlerts] = useState([]);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [alerts, setAlerts] = useState<Alert[]>([]);
 
-  const [form, setForm] = useState({
+  const [form, setForm] = useState<AlertForm>({
     title: '',
     message: '',
     studentId: ''
@@ -24,7 +31,7 @@ const TeacherAlerts = () => {
       try {
         if (!className || !section) return;
 
-        const res = await api.get('/students', {
+        const res = await api.get<Student[]>('/students', {
           params: {
             class: className,
             section,
@@ -33,7 +40,7 @@ const TeacherAlerts = () => {
         });
 
         setStudents(res.data);
-      } catch (err) {
+      } catch (err: any) {
         console.error('Student Load Error:', err);
       }
     };
@@ -46,7 +53,7 @@ const TeacherAlerts = () => {
     try {
       if (!teacherId) return;
 
-      const res = await api.get('/alerts', {
+      const res = await api.get<Alert[]>('/alerts', {
         params: {
           senderId: teacherId,
           academicYear: '2024-2025'
@@ -54,7 +61,7 @@ const TeacherAlerts = () => {
       });
 
       setAlerts(res.data);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Alert Load Error:', err);
     }
   };
@@ -94,19 +101,19 @@ const TeacherAlerts = () => {
       setForm({ title: '', message: '', studentId: '' });
 
       fetchAlerts(); // refresh immediately
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       alert(err.response?.data?.error || 'Failed to send alert');
     }
   };
 
-  const getStudentLabel = (id) => {
+  const getStudentLabel = (id: string): string => {
     const s = students.find(st => st._id === id);
 
     if (!s) return id; 
 
     return `${s.name} (${s.studentId})`;
-    };
+  };
 
   return (
     <div className="bg-white p-6 rounded-xl shadow">
@@ -129,7 +136,7 @@ const TeacherAlerts = () => {
 
         <select
           value={form.studentId}
-          onChange={(e) => setForm({ ...form, studentId: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setForm({ ...form, studentId: e.target.value })}
           className="border p-2 w-full mb-3 rounded"
         >
           <option value="">Select Student</option>
@@ -143,14 +150,14 @@ const TeacherAlerts = () => {
         <input
           placeholder="Title"
           value={form.title}
-          onChange={(e) => setForm({ ...form, title: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, title: e.target.value })}
           className="border p-2 w-full mb-3 rounded"
         />
 
         <textarea
           placeholder="Message"
           value={form.message}
-          onChange={(e) => setForm({ ...form, message: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setForm({ ...form, message: e.target.value })}
           className="border p-2 w-full mb-3 rounded"
         />
 

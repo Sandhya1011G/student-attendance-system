@@ -14,9 +14,7 @@ import TeacherView from './components/dashboard/TeacherView';
 import TeacherAdminAlerts from './components/teacher/TeacherAdminAlerts';
 import SchoolAdminDashboard from './components/SchoolAdminDashboard';
 
-
-
-function App() {
+const App: React.FC = () => {
   return (
     <Router>
       <div className="min-h-screen bg-gray-100">
@@ -41,7 +39,6 @@ function App() {
       </div>
     </Router>
   );
-}
+};
 
 export default App;
-

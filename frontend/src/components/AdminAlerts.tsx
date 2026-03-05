@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
 import api from '../config/api';
+import { Alert } from '../types';
 
-const AdminAlerts = () => {
-  const [form, setForm] = useState({
+interface AdminAlertForm {
+  title: string;
+  message: string;
+  class: string;
+  section: string;
+}
+
+const AdminAlerts: React.FC = () => {
+  const [form, setForm] = useState<AdminAlertForm>({
     title: '',
     message: '',
     class: '',
@@ -16,7 +24,7 @@ const AdminAlerts = () => {
         return;
       }
 
-      await api.post('/alerts', {
+      await api.post<Alert>('/alerts', {
         title: form.title,
         message: form.message,
 
@@ -33,8 +41,7 @@ const AdminAlerts = () => {
       alert('Alert sent to class successfully');
 
       setForm({ title: '', message: '', class: '', section: '' });
-
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       alert('Failed to send alert');
     }
@@ -47,14 +54,14 @@ const AdminAlerts = () => {
       <input
         placeholder="Title"
         value={form.title}
-        onChange={(e) => setForm({ ...form, title: e.target.value })}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, title: e.target.value })}
         className="border p-2 w-full mb-3 rounded"
       />
 
       <textarea
         placeholder="Message"
         value={form.message}
-        onChange={(e) => setForm({ ...form, message: e.target.value })}
+        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setForm({ ...form, message: e.target.value })}
         className="border p-2 w-full mb-3 rounded"
       />
 
@@ -62,14 +69,14 @@ const AdminAlerts = () => {
         <input
           placeholder="Class"
           value={form.class}
-          onChange={(e) => setForm({ ...form, class: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, class: e.target.value })}
           className="border p-2 w-full rounded"
         />
 
         <input
           placeholder="Section"
           value={form.section}
-          onChange={(e) => setForm({ ...form, section: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setForm({ ...form, section: e.target.value })}
           className="border p-2 w-full rounded"
         />
       </div>

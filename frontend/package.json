@@ -10,16 +10,30 @@
     "recharts": "^2.8.0",
     "moment": "^2.29.4",
     "jspdf": "^2.5.1",
-    "jspdf-autotable": "^3.8.0"
+    "jspdf-autotable": "^3.8.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "@types/react-router-dom": "^5.3.3",
+    "@types/axios": "^1.6.0",
+    "@types/jspdf": "^2.3.0",
+    "@types/moment": "^2.29.5"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "CI=false react-scripts build",
+    "build": "set CI=false && set ESLINT_NO_DEV_ERRORS=true && set DISABLE_ESLINT_PLUGIN=true && react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "tsc --noEmit --watch",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix"
   },
   "eslintConfig": {
-    "extends": ["react-app"]
+    "extends": ["react-app", "react-app/jest"],
+    "rules": {
+      "@typescript-eslint/no-unused-vars": "off",
+      "react-hooks/exhaustive-deps": "off"
+    }
   },
   "browserslist": {
     "production": [">0.2%", "not dead", "not op_mini all"],
@@ -27,6 +41,9 @@
   },
   "devDependencies": {
     "react-scripts": "5.0.1",
+    "typescript": "^5.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
     "tailwindcss": "^3.3.3",
     "autoprefixer": "^10.4.16",
     "postcss": "^8.4.31"

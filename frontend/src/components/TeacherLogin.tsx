@@ -1,12 +1,23 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../config/api';
+import { LoginProps } from '../types';
 
-const TeacherLogin = () => {
+interface TeacherLoginResponse {
+  teacherMongoId: string;
+  name: string;
+  isClassTeacher: boolean;
+  classAssigned?: {
+    class: string;
+    section: string;
+  };
+}
+
+const TeacherLogin: React.FC<LoginProps> = () => {
   const navigate = useNavigate();
 
-  const [teacherIdInput, setTeacherIdInput] = useState('');
-  const [error, setError] = useState('');
+  const [teacherIdInput, setTeacherIdInput] = useState<string>('');
+  const [error, setError] = useState<string>('');
 
   const handleLogin = async () => {
     try {
@@ -17,7 +28,7 @@ const TeacherLogin = () => {
         return;
       }
 
-      const res = await api.post('/teachers/login', {
+      const res = await api.post<TeacherLoginResponse>('/teachers/login', {
         teacherId: teacherIdInput.trim().toUpperCase()
       });
 
@@ -26,7 +37,7 @@ const TeacherLogin = () => {
       /* ✅ STORE SESSION CORRECTLY */
       localStorage.setItem('teacherId', teacher.teacherMongoId);   // ⭐ MOST IMPORTANT
       localStorage.setItem('teacherName', teacher.name);
-      localStorage.setItem('isClassTeacher', teacher.isClassTeacher);
+      localStorage.setItem('isClassTeacher', String(teacher.isClassTeacher));
 
       if (teacher.classAssigned) {
         localStorage.setItem('teacherClass', teacher.classAssigned.class);
@@ -35,7 +46,7 @@ const TeacherLogin = () => {
 
       navigate('/teacher-dashboard');
 
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       setError(err.response?.data?.error || 'Login failed');
     }
@@ -50,7 +61,7 @@ const TeacherLogin = () => {
         <input
           placeholder="Enter Teacher ID (TCH001)"
           value={teacherIdInput}
-          onChange={((e) => setTeacherIdInput(e.target.value))}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTeacherIdInput(e.target.value)}
           className="border p-2 w-full mb-3 rounded"
         />
 

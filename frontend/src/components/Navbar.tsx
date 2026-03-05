@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
-const Navbar = () => {
+type UserRole = 'student' | 'teacher' | 'admin' | 'main' | null;
+
+const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [userRole, setUserRole] = useState(null);
-  const [userName, setUserName] = useState('');
-  const [showProfile, setShowProfile] = useState(false);
 
-  const isActive = (path) => location.pathname === path;
+  const [userRole, setUserRole] = useState<UserRole | null>(null);
+  const [userName, setUserName] = useState<string>('');
+  const [showProfile, setShowProfile] = useState<boolean>(false);
+
+  const isActive = (path: string): boolean => location.pathname === path;
 
   useEffect(() => {
     // Determine user role and name based on localStorage
@@ -74,11 +77,11 @@ const Navbar = () => {
     setShowProfile(false);
   };
 
-  const getNavigationItems = () => {
+  const getNavigationItems = (): any[] => {
     return []; // No navigation items - only profile
   };
 
-  const getRoleColor = () => {
+  const getRoleColor = (): string => {
     switch (userRole) {
       case 'student': return 'text-blue-600';
       case 'teacher': return 'text-green-600';
@@ -87,7 +90,7 @@ const Navbar = () => {
     }
   };
 
-  const getRoleIcon = () => {
+  const getRoleIcon = (): string => {
     switch (userRole) {
       case 'student': return '👨‍🎓';
       case 'teacher': return '👨‍🏫';
@@ -156,7 +159,6 @@ const Navbar = () => {
                 )}
               </div>
             )}
-
           </div>
         </div>
       </div>

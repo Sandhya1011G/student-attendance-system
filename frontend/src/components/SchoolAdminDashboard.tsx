@@ -55,7 +55,12 @@ const SchoolAdminDashboard = () => {
   const [loadingLowAttendance, setLoadingLowAttendance] = useState(false);
   const [notifyingId, setNotifyingId] = useState(null);
   const [notifyMessage, setNotifyMessage] = useState({ type: '', text: '' });
-  const [lowAttendanceFilters, setLowAttendanceFilters] = useState({
+  const [lowAttendanceFilters, setLowAttendanceFilters] = useState<{
+    className: string;
+    section: string;
+    threshold: number;
+    academicYear: string;
+  }>({
     className: '',
     section: '',
     threshold: 75,
@@ -182,7 +187,7 @@ const SchoolAdminDashboard = () => {
   const fetchLowAttendance = async () => {
     try {
       setLoadingLowAttendance(true);
-      const params = {
+      const params: any = {
         academicYear: lowAttendanceFilters.academicYear,
         threshold: lowAttendanceFilters.threshold
       };
@@ -196,9 +201,9 @@ const SchoolAdminDashboard = () => {
       setLowAttendanceData(data);
       console.log('Low attendance data:', data);
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching low attendance data:', error);
-      setLowAttendanceData([]); // Set empty array on error
+      setLowAttendanceData([]);
       setMessage('Error loading low attendance data');
       setTimeout(() => setMessage(''), 3000);
     } finally {
@@ -206,13 +211,13 @@ const SchoolAdminDashboard = () => {
     }
   };
 
-  const getSeverityColor = (percentage) => {
+  const getSeverityColor = (percentage: number) => {
     if (percentage < 60) return 'bg-red-600';
     if (percentage < 70) return 'bg-orange-500';
     return 'bg-yellow-500';
   };
 
-  const handleContactParent = async (item) => {
+  const handleContactParent = async (item: any) => {
     const studentId = item.student.id;
     setNotifyingId(studentId);
     setNotifyMessage({ type: '', text: '' });
@@ -233,7 +238,7 @@ const SchoolAdminDashboard = () => {
       });
 
       setNotifyMessage({ type: 'success', text: `SMS sent to ${item.student.parentName} at ${phone}` });
-    } catch (error) {
+    } catch (error: any) {
       const msg = error.response?.data?.error || error.message || 'Failed to send notification';
       setNotifyMessage({ type: 'error', text: msg });
     } finally {
@@ -257,7 +262,7 @@ const SchoolAdminDashboard = () => {
 
       setNotifyMessage({ type: 'success', text: 'Alert sent to class teacher' });
 
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
       const msg = err.response?.data?.error || err.message || 'Failed to send alert';
       setNotifyMessage({ type: 'error', text: msg });
@@ -454,10 +459,18 @@ const SchoolAdminDashboard = () => {
       setMessage('Attendance saved successfully!');
       setTimeout(() => setMessage(''), 3000);
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving attendance:', error);
-      setMessage('Error saving attendance');
-      setTimeout(() => setMessage(''), 3000);
+      
+      // Check if error is due to already finalized attendance
+      if (error.response?.data?.error?.includes('finalized') || 
+          error.response?.data?.message?.includes('finalized') ||
+          error.message?.includes('finalized')) {
+        setMessage('⚠️ Attendance has already been finalized for this date. Finalized attendance cannot be modified.');
+      } else {
+        setMessage('❌ Unable to save attendance. Please try again or contact support.');
+      }
+      setTimeout(() => setMessage(''), 5000);
     } finally {
       setLoading(false);
     }
@@ -1183,7 +1196,7 @@ const SchoolAdminDashboard = () => {
                   className="w-full px-4 py-2 border rounded-lg"
                 >
                   <option value="">All Classes</option>
-                  {[...new Set(classes.map(c => c.className))].map(className => (
+                  {Array.from(new Set(classes.map(c => c.className))).map(className => (
                     <option key={className} value={className}>{className}</option>
                   ))}
                 </select>
@@ -1399,10 +1412,10 @@ const SchoolAdminDashboard = () => {
       <div className="container mx-auto px-4 py-6">
         {/* Tab Navigation */}
         <div className="bg-white rounded-xl shadow-md p-4 mb-6">
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-2 sm:gap-4">
             <button
               onClick={() => setActiveTab('home')}
-              className={`px-6 py-3 rounded-lg font-medium transition ${
+              className={`px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-medium transition text-sm sm:text-base ${
                 activeTab === 'home'
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -1412,7 +1425,7 @@ const SchoolAdminDashboard = () => {
             </button>
             <button
               onClick={() => setActiveTab('attendance')}
-              className={`px-6 py-3 rounded-lg font-medium transition ${
+              className={`px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-medium transition text-sm sm:text-base ${
                 activeTab === 'attendance'
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -1422,7 +1435,7 @@ const SchoolAdminDashboard = () => {
             </button>
             <button
               onClick={() => setActiveTab('reports')}
-              className={`px-6 py-3 rounded-lg font-medium transition ${
+              className={`px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-medium transition text-sm sm:text-base ${
                 activeTab === 'reports'
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -1432,7 +1445,7 @@ const SchoolAdminDashboard = () => {
             </button>
             <button
               onClick={() => setActiveTab('low-attendance')}
-              className={`px-6 py-3 rounded-lg font-medium transition ${
+              className={`px-4 py-2 sm:px-6 sm:py-3 rounded-lg font-medium transition text-sm sm:text-base ${
                 activeTab === 'low-attendance'
                   ? 'bg-blue-600 text-white'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -1442,7 +1455,7 @@ const SchoolAdminDashboard = () => {
             </button>
             <button
               onClick={() => navigate('/')}
-              className="px-6 py-3 bg-gray-600 text-white rounded-lg font-medium hover:bg-gray-700 transition"
+              className="px-4 py-2 sm:px-6 sm:py-3 bg-gray-600 text-white rounded-lg font-medium hover:bg-gray-700 transition text-sm sm:text-base"
             >
               Back to Main Dashboard
             </button>

@@ -105,7 +105,7 @@ const Dashboard = () => {
         ])
       });
 
-      y = doc.lastAutoTable.finalY + 10;
+      y = (doc as any).lastAutoTable.finalY + 10;
     }
 
     if (bottomClasses.length > 0) {

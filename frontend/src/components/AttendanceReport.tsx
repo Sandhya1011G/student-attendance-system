@@ -182,7 +182,7 @@ const AttendanceReport = () => {
       }
       
       // Add footer
-      const finalY = doc.lastAutoTable ? doc.lastAutoTable.finalY || 250 : 250;
+      const finalY = (doc as any).lastAutoTable ? (doc as any).lastAutoTable.finalY || 250 : 250;
       doc.setFontSize(10);
       doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, finalY + 20);
       
@@ -191,7 +191,7 @@ const AttendanceReport = () => {
       console.log('Saving PDF as:', fileName);
       doc.save(fileName);
       
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error generating bulk PDF:', error);
       console.error('Error details:', error.message, error.stack);
       alert(`Failed to generate PDF: ${error.message || 'Unknown error'}. Please try again.`);

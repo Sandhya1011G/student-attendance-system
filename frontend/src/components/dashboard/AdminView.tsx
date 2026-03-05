@@ -2,8 +2,13 @@ import React from 'react';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
+import { AttendanceOverview } from '../../types';
 
-const AdminView = ({ data }) => {
+interface AdminViewProps {
+  data: AttendanceOverview;
+}
+
+const AdminView: React.FC<AdminViewProps> = ({ data }) => {
 
   const present = data.overallPresent ?? 0;
   const absent = (100 - present).toFixed(1);
